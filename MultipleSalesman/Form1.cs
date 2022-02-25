@@ -37,12 +37,9 @@ namespace MultipleSalesman
 
         private const int Plaetze = 5;
 
-        Image map;
+        private Image map;
 
-        private int iteration = 0;
-        private int bestIteration = 0;
-
-        private bool isCancled = false;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public Form1()
         {
@@ -54,52 +51,54 @@ namespace MultipleSalesman
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            isCancled = true;
-            Thread.Sleep(1000);
-            isCancled = false;
-            iteration = 0;
-            bestIteration = 0;
+            cancellationTokenSource.Cancel();
             this.StartAlgorithmus();
         }
 
         private void StartAlgorithmus()
         {
-            Algorithmus algorithmus = new Algorithmus();
+            IWaypoint<PointF>[] bestRoute = this.route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray();
+            double bestScore = 1000000000;
+            int bestIteration = 0;
+            int lastIteration = 0;
 
-            var besteRoute = algorithmus.Rechne(route, Plaetze, startingPoint);
-            this.RenderRoute(besteRoute, Plaetze);
+            var cancellationTokenSource = new CancellationTokenSource();
+            this.cancellationTokenSource = cancellationTokenSource;
+            Task.Run(() => {
+                Task.Delay(100);
+
+                var shuttleRoute = new ShuttleRoute<PointF>();
+                ShuttleRouteEventHandler<PointF> shuttleRouteEventHandler =
+                    new ShuttleRouteEventHandler<PointF>((route, score, iteration) =>
+                    {
+                        bestRoute = route;
+                        bestScore = score;
+                        bestIteration = iteration;
+                    });
+
+                shuttleRoute.OptimizeAsync(
+                    bestRoute,
+                    new PointWaypoint(startingPoint.X, startingPoint.Y),
+                    Plaetze,
+                    shuttleRouteEventHandler,
+                    cancellationTokenSource.Token);
+            });
+
             Task.Run(async () =>
             {
-                await Task.Delay(100);
-                while (!isCancled)
-                {
-                    if (iteration % 800 == 0)
+                while (!cancellationTokenSource.IsCancellationRequested)
+                { 
+                    await Task.Delay(100);
+                    if (lastIteration < bestIteration)
                     {
-                        await Task.Delay(100);
-                        this.RenderRoute(besteRoute, Plaetze);
-                    }
-                    Algorithmus2 algorithmus2 = new Algorithmus2();
-                    var bessereRoute = algorithmus2.Rechne(besteRoute, Plaetze);
-                    iteration++;
-                    if (GraphHelper.CalculateScore(bessereRoute) < GraphHelper.CalculateScore(besteRoute))
-                    {
-                        besteRoute = bessereRoute;
-                        bestIteration = iteration;
+                        this.RenderRoute(bestRoute, bestScore, bestIteration);
+                        lastIteration = bestIteration;
                     }
                 }
             });
-
-            //Task.Run(async () =>
-            //{
-            //    while (!isCancled)
-            //    {
-            //        await Task.Delay(500);
-            //        this.RenderRoute(besteRoute, Plaetze);
-            //    }
-            //});
         }
 
-        private void RenderRoute(Point[] route, int plaetze)
+        private void RenderRoute(IWaypoint<PointF>[] route, double score, int iteration)
         {
             Pen pen = new Pen(Color.Black);
             pen.Width = 3;
@@ -114,11 +113,11 @@ namespace MultipleSalesman
                 myCanvas.DrawImage(map, 0 , 0);
                 for (int i = 0; i < route.Length; i++)
                 {
-                    Point point = route[i];
+                    PointF point = route[i].GetValue();
 
                     if (i < route.Length - 1)
                     {
-                        Point nextPoint = route[i + 1];
+                        PointF nextPoint = route[i + 1].GetValue();
 
                         if (point == startingPoint)
                         {
@@ -133,8 +132,7 @@ namespace MultipleSalesman
                     myCanvas.DrawString(i.ToString(), new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, point.X - 10, point.Y - 10 - 4);
                 }
 
-                myCanvas.DrawString(iteration.ToString(), new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, 10, 680);
-                myCanvas.DrawString(GraphHelper.CalculateScore(route).ToString() + " in Iteration: " + bestIteration, new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, 10, 700);
+                myCanvas.DrawString(score.ToString() + " in Iteration: " + iteration, new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, 10, 700);
             }
         }
     }
