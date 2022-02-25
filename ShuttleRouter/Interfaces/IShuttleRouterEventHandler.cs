@@ -1,6 +1,6 @@
-﻿namespace MultipleSalesman
+﻿namespace ShuttleRouting
 {
-    internal interface IShuttleRouterEventHandler<T>
+    public interface IShuttleRouterEventHandler<T>
     {
         Task OnImprovedRouteFound(IWaypoint<T>[] route, double score, int iteration);
     }

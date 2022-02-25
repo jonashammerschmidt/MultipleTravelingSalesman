@@ -1,6 +1,6 @@
-﻿namespace MultipleSalesman
+﻿namespace ShuttleRouting
 {
-    internal interface IWaypoint<T>
+    public interface IWaypoint<T>
     {
         public double GetCost(T waypoint);
 

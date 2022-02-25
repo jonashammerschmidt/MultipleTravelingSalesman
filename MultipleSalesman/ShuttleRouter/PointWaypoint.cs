@@ -1,4 +1,6 @@
-﻿namespace MultipleSalesman
+﻿using ShuttleRouting;
+
+namespace MultipleSalesman
 {
     internal class PointWaypoint : IWaypoint<PointF>
     {

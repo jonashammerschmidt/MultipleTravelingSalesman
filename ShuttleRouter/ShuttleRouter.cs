@@ -1,18 +1,41 @@
-﻿namespace MultipleSalesman
+﻿using System.Diagnostics;
+
+namespace ShuttleRouting
 {
-    internal class ShuttleRouter<T> : IShuttleRouter<T>
+    public class ShuttleRouter<T> : IShuttleRouter<T>
     {
         private const int SwappingTimes = 3;
 
         private readonly Random random = new Random();
 
+        public Task OptimizeParallelAsync(
+            IWaypoint<T>[] destinations,
+            IWaypoint<T> pickupLocation,
+            int capacity,
+            IShuttleRouterEventHandler<T> shuttleRouterEventHandler,
+            CancellationToken cancellationToken,
+            int threads)
+        {
+            ParallelShuttleRouterEventHandler<T> paralellShuttleRouterEventHandler =
+                new ParallelShuttleRouterEventHandler<T>(shuttleRouterEventHandler);
+
+            for (int i = 0; i < threads; i++)
+            {
+                Task.Run(() => OptimizeAsync(destinations, pickupLocation, capacity, paralellShuttleRouterEventHandler, cancellationToken));
+            }
+
+            return Task.CompletedTask;
+        }
+
         public Task OptimizeAsync(
             IWaypoint<T>[] destinations,
             IWaypoint<T> pickupLocation,
             int capacity,
-            IShuttleRouterEventHandler<T> shuttleRouteEventHandler,
+            IShuttleRouterEventHandler<T> shuttleRouterEventHandler,
             CancellationToken cancellationToken)
         {
+            Debug.WriteLine("Started OptimizeAsync");
+
             destinations = destinations
                 .Where(destination => !destination.AreEqual(pickupLocation.GetValue()))
                 .ToArray();
@@ -21,6 +44,7 @@
             IWaypoint<T>[] bestRoute = route;
             double bestScore = CalculateScore(bestRoute);
             int iteration = 0;
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 iteration++;
@@ -31,7 +55,7 @@
                 {
                     bestRoute = swappedRoute;
                     bestScore = swappedRouteScore;
-                    shuttleRouteEventHandler.OnImprovedRouteFound(bestRoute, bestScore, iteration);
+                    shuttleRouterEventHandler.OnImprovedRouteFound(bestRoute, bestScore, iteration);
                 }
             }
 

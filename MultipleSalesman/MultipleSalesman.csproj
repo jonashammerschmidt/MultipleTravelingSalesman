@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShuttleRouter\ShuttleRouting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="map.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,11 +1,12 @@
-﻿namespace MultipleSalesman
+﻿using ShuttleRouting;
+
+namespace MultipleSalesman
 {
     internal class ShuttleRouterEventHandler<T> : IShuttleRouterEventHandler<T>
     {
-
         private Action<IWaypoint<T>[], double, int> onImprovedRouteFoundAction;
 
-        public ShuttleRouterEventHandler(Action<IWaypoint<T>[], double, int>  onImprovedRouteFoundAction)
+        public ShuttleRouterEventHandler(Action<IWaypoint<T>[], double, int> onImprovedRouteFoundAction)
         {
             this.onImprovedRouteFoundAction = onImprovedRouteFoundAction;
         }

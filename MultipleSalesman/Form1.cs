@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using ShuttleRouting;
 
 namespace MultipleSalesman
 {
@@ -58,15 +58,13 @@ namespace MultipleSalesman
         private void StartAlgorithmus()
         {
             IWaypoint<PointF>[] bestRoute = this.route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray();
-            double bestScore = 1000000000;
+            double bestScore = 0;
             int bestIteration = 0;
             int lastIteration = 0;
 
             var cancellationTokenSource = new CancellationTokenSource();
             this.cancellationTokenSource = cancellationTokenSource;
             Task.Run(() => {
-                Task.Delay(100);
-
                 var shuttleRoute = new ShuttleRouter<PointF>();
                 ShuttleRouterEventHandler<PointF> shuttleRouteEventHandler =
                     new ShuttleRouterEventHandler<PointF>((route, score, iteration) =>
@@ -88,7 +86,7 @@ namespace MultipleSalesman
             {
                 while (!cancellationTokenSource.IsCancellationRequested)
                 { 
-                    await Task.Delay(100);
+                    await Task.Delay(200);
                     if (lastIteration < bestIteration)
                     {
                         this.RenderRoute(bestRoute, bestScore, bestIteration);

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultipleSalesman", "MultipleSalesman\MultipleSalesman.csproj", "{05474A71-FCB6-4C7F-8A2B-3D0404116A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuttleRouting", "ShuttleRouter\ShuttleRouting.csproj", "{F424C86F-46CD-4B7F-9C00-FD1EDDF9CB77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{05474A71-FCB6-4C7F-8A2B-3D0404116A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05474A71-FCB6-4C7F-8A2B-3D0404116A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05474A71-FCB6-4C7F-8A2B-3D0404116A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F424C86F-46CD-4B7F-9C00-FD1EDDF9CB77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F424C86F-46CD-4B7F-9C00-FD1EDDF9CB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F424C86F-46CD-4B7F-9C00-FD1EDDF9CB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F424C86F-46CD-4B7F-9C00-FD1EDDF9CB77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
