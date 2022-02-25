@@ -2,46 +2,85 @@ namespace MultipleSalesman
 {
     public partial class Form1 : Form
     {
-
-        Point[] route = new Point[] {
-            new Point(170, 50),
-            new Point(270, 180),
-            new Point(160, 10),
-            new Point(50, 10),
-            new Point(250, 130),
-            new Point(180, 30),
-            new Point(50, 210),
+        private Point[] route = new Point[] {
+            new Point(80, 120),
+            new Point(150, 150),
+            new Point(60, 220),
+            new Point(140, 350),
+            new Point(220, 420),
+            new Point(170, 470),
+            new Point(250, 450),
+            new Point(330, 590),
+            new Point(420, 600),
+            new Point(350, 660),
+            new Point(640, 300),
+            new Point(620, 250),
+            new Point(520, 60),
         };
+
+        private Point startingPoint = new Point(420, 340);
+
+        private const int Plaetze = 5;
+
+        Image map;
+
+        private int iteration = 0;
+        private int bestIteration = 0;
 
         public Form1()
         {
             InitializeComponent();
 
-            Task.Run(() =>
+            map = Image.FromFile("map.png");
+
+            Algorithmus algorithmus = new Algorithmus();
+
+            var besteRoute = algorithmus.Rechne(route, Plaetze, startingPoint);
+            Task.Run(async () =>
             {
-                Thread.Sleep(1000);
-                Algorithmus algorithmus = new Algorithmus();
-                var bessereRoute = algorithmus.Rechne(route, 3, new Point(150, 150));
-                this.RenderRoute(bessereRoute);
+                await Task.Delay(100);
+                while (true)
+                {
+                    if (iteration > 1000000) {
+                        iteration = 0;
+                        bestIteration = 0;
+                        besteRoute = algorithmus.Rechne(route, Plaetze, startingPoint);
+                    }
+
+                    //await Task.Delay(100);
+                    Algorithmus2 algorithmus2 = new Algorithmus2();
+                    var bessereRoute = algorithmus2.Rechne(besteRoute, Plaetze);
+                    iteration++;
+                    if (GraphHelper.CalculateScore(bessereRoute) < GraphHelper.CalculateScore(besteRoute))
+                    {
+                        besteRoute = bessereRoute;
+                        bestIteration = iteration;
+                        this.RenderRoute(besteRoute, Plaetze);
+                    }
+                }
+            });
+
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(1000);
+                    Console.WriteLine("Iteration: " + iteration.ToString());
+                }
             });
         }
 
 
-        private void RenderRoute(Point[] route)
+        private void RenderRoute(Point[] route, int plaetze)
         {
-            Pen whitePen = new Pen(Color.White);
+            Pen blackPen = new Pen(Color.Black);
+            blackPen.Width = 3;
             SolidBrush whiteBrush = new SolidBrush(Color.White);
             SolidBrush blackBrush = new SolidBrush(Color.Black);
 
-            var centerX = route.Average(point => point.X);
-            var centerY = route.Average(point => point.Y);
-
-            int offsetX = (int)(pictureBox1.Size.Width / 2 - centerX);
-            int offsetY = (int)(pictureBox1.Size.Height / 2 - centerY);
-
             using (Graphics myCanvas = pictureBox1.CreateGraphics())
             {
-                myCanvas.Clear(Color.Black);
+                myCanvas.DrawImage(map, 0 , 0);
                 for (int i = 0; i < route.Length; i++)
                 {
                     Point point = route[i];
@@ -49,13 +88,16 @@ namespace MultipleSalesman
                     if (i < route.Length - 1)
                     {
                         Point nextPoint = route[i + 1];
-                        whitePen.Color = ColorScale.ColorFromHSL((float)i / route.Length, 1, 0.5);
-                        myCanvas.DrawLine(whitePen, point.X + offsetX, point.Y + offsetY, nextPoint.X + offsetX, nextPoint.Y + offsetY);
+                        blackPen.Color = ColorScale.ColorFromHSL((i / (plaetze + 1)) * 0.3f, 1, 0.5);
+                        myCanvas.DrawLine(blackPen, point.X, point.Y, nextPoint.X, nextPoint.Y);
                     }
 
-                    myCanvas.FillEllipse(whiteBrush, point.X - 10 + offsetX, point.Y - 10 + offsetY, 20, 20);
-                    myCanvas.DrawString(i.ToString(), new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, point.X - 10 + offsetX, point.Y - 10 - 4 + offsetY);
+                    myCanvas.FillEllipse(whiteBrush, point.X - 10, point.Y - 10, 20, 20);
+                    myCanvas.DrawString(i.ToString(), new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, point.X - 10, point.Y - 10 - 4);
                 }
+
+                myCanvas.DrawString(iteration.ToString(), new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, 10, 680);
+                myCanvas.DrawString(GraphHelper.CalculateScore(route).ToString() + " in Iteration: " + bestIteration, new Font("Comic Sans MS", 14, FontStyle.Bold), blackBrush, 10, 700);
             }
         }
     }
