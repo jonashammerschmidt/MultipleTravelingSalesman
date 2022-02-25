@@ -34,23 +34,29 @@ XY StartingPoint = new XY(420, 340);
 
 const int Plaetze = 5;
 
-CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-Task.Run(() =>
+while (true)
 {
-    var shuttleRoute = new ShuttleRouter<XY>();
-    ShuttleRouterEventHandler<XY> shuttleRouteEventHandler =
-        new ShuttleRouterEventHandler<XY>((route, score, iteration) =>
-        {
-            Console.WriteLine($"New best score {score} in iteration {iteration}");
-        });
+    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    Task.Run(() =>
+    {
+        var shuttleRoute = new ShuttleRouter<XY>();
+        ShuttleRouterEventHandler<XY> shuttleRouteEventHandler =
+            new ShuttleRouterEventHandler<XY>((route, score, iteration) =>
+            {
+                Console.WriteLine($"New best score {score} in iteration {iteration}");
+            });
 
-    shuttleRoute.OptimizeAsync(
-        Route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray(),
-        new PointWaypoint(StartingPoint.X, StartingPoint.Y),
-        Plaetze,
-        shuttleRouteEventHandler,
-        cancellationTokenSource.Token);
-});
+        shuttleRoute.OptimizeAsync(
+            Route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray(),
+            new PointWaypoint(StartingPoint.X, StartingPoint.Y),
+            Plaetze,
+            shuttleRouteEventHandler,
+            cancellationTokenSource.Token);
+    });
 
-Console.ReadLine();
-cancellationTokenSource.Cancel();
+    Console.ReadLine();
+    cancellationTokenSource.Cancel();
+    Console.WriteLine();
+    Console.WriteLine();
+    Task.Delay(100);
+}
