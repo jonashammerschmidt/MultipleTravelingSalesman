@@ -1,6 +1,6 @@
 ﻿namespace MultipleSalesman
 {
-    internal class ShuttleRoute<T> : IShuttleRoute<T>
+    internal class ShuttleRouter<T> : IShuttleRouter<T>
     {
         private const int SwappingTimes = 3;
 
@@ -10,7 +10,7 @@
             IWaypoint<T>[] destinations,
             IWaypoint<T> pickupLocation,
             int capacity,
-            IShuttleRouteEventHandler<T> shuttleRouteEventHandler,
+            IShuttleRouterEventHandler<T> shuttleRouteEventHandler,
             CancellationToken cancellationToken)
         {
             destinations = destinations

@@ -67,9 +67,9 @@ namespace MultipleSalesman
             Task.Run(() => {
                 Task.Delay(100);
 
-                var shuttleRoute = new ShuttleRoute<PointF>();
-                ShuttleRouteEventHandler<PointF> shuttleRouteEventHandler =
-                    new ShuttleRouteEventHandler<PointF>((route, score, iteration) =>
+                var shuttleRoute = new ShuttleRouter<PointF>();
+                ShuttleRouterEventHandler<PointF> shuttleRouteEventHandler =
+                    new ShuttleRouterEventHandler<PointF>((route, score, iteration) =>
                     {
                         bestRoute = route;
                         bestScore = score;
