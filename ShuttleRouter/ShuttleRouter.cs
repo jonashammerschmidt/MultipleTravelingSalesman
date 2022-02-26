@@ -34,8 +34,6 @@ namespace ShuttleRouting
             IShuttleRouterEventHandler<T> shuttleRouterEventHandler,
             CancellationToken cancellationToken)
         {
-            Debug.WriteLine("Started OptimizeAsync");
-
             destinations = destinations
                 .Where(destination => !destination.AreEqual(pickupLocation.GetValue()))
                 .ToArray();
