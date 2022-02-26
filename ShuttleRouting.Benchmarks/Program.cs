@@ -46,13 +46,12 @@ while (true)
                 Console.WriteLine($"New best score {score} in iteration {iteration}");
             });
 
-        shuttleRoute.OptimizeParallelAsync(
+        shuttleRoute.OptimizeAsync(
             Route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray(),
             new PointWaypoint(StartingPoint.X, StartingPoint.Y),
             Plaetze,
             shuttleRouteEventHandler,
-            cancellationTokenSource.Token,
-            4);
+            cancellationTokenSource.Token);
     });
 
     Console.ReadLine();
