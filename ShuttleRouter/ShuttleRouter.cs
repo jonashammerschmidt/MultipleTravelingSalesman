@@ -9,8 +9,8 @@ namespace ShuttleRouting
         private readonly Random random = new Random();
 
         public Task OptimizeParallelAsync(
-            IWaypoint<T>[] destinations,
-            IWaypoint<T> pickupLocation,
+            Waypoint<T>[] destinations,
+            Waypoint<T> pickupLocation,
             int capacity,
             IShuttleRouterEventHandler<T> shuttleRouterEventHandler,
             CancellationToken cancellationToken,
@@ -28,8 +28,8 @@ namespace ShuttleRouting
         }
 
         public Task OptimizeAsync(
-            IWaypoint<T>[] destinations,
-            IWaypoint<T> pickupLocation,
+            Waypoint<T>[] destinations,
+            Waypoint<T> pickupLocation,
             int capacity,
             IShuttleRouterEventHandler<T> shuttleRouterEventHandler,
             CancellationToken cancellationToken)
@@ -38,8 +38,8 @@ namespace ShuttleRouting
                 .Where(destination => !destination.AreEqual(pickupLocation.GetValue()))
                 .ToArray();
 
-            IWaypoint<T>[] route = GetRouteWithPickupLocations(destinations, pickupLocation, capacity);
-            IWaypoint<T>[] bestRoute = route;
+            Waypoint<T>[] route = GetRouteWithPickupLocations(destinations, pickupLocation, capacity);
+            Waypoint<T>[] bestRoute = route;
             double bestScore = CalculateScore(bestRoute);
             int iteration = 0;
 
@@ -60,9 +60,9 @@ namespace ShuttleRouting
             return Task.CompletedTask;
         }
 
-        private IWaypoint<T>[] SwapWaypoints(IWaypoint<T>[] route, int capacity)
+        private Waypoint<T>[] SwapWaypoints(Waypoint<T>[] route, int capacity)
         {
-            IWaypoint<T>[] routeCopy = new IWaypoint<T>[route.Length];
+            Waypoint<T>[] routeCopy = new Waypoint<T>[route.Length];
             Array.Copy(route, routeCopy, route.Length);
 
             for (int i = 0; i < SwappingTimes; i++)
@@ -73,7 +73,7 @@ namespace ShuttleRouting
             return routeCopy;
         }
 
-        private void SwapWaypoint(IWaypoint<T>[] route, int capacity)
+        private void SwapWaypoint(Waypoint<T>[] route, int capacity)
         {
             int swapIndex1, swapIndex2;
             do
@@ -82,12 +82,12 @@ namespace ShuttleRouting
                 swapIndex2 = this.random.Next() % route.Length;
             } while (!IsWaypointSwapValid(route, capacity, swapIndex1, swapIndex2));
 
-            IWaypoint<T> tempWaypoint = route[swapIndex2];
+            Waypoint<T> tempWaypoint = route[swapIndex2];
             route[swapIndex2] = route[swapIndex1];
             route[swapIndex1] = tempWaypoint;
         }
 
-        private bool IsWaypointSwapValid(IWaypoint<T>[] route, int capacity, int swapIndex1, int swapIndex2)
+        private bool IsWaypointSwapValid(Waypoint<T>[] route, int capacity, int swapIndex1, int swapIndex2)
         {
             if (swapIndex1 == 0 ||
                 swapIndex2 == 0 ||
@@ -97,7 +97,7 @@ namespace ShuttleRouting
                 return false;
             }
 
-            IWaypoint<T> pickupLocation = route[0];
+            Waypoint<T> pickupLocation = route[0];
 
             int occupiedCapacity = 0;
             for (int i = 0; i < route.Length; i++)
@@ -132,9 +132,9 @@ namespace ShuttleRouting
         }
 
 
-        private IWaypoint<T>[] GetRouteWithPickupLocations(IWaypoint<T>[] destinations, IWaypoint<T> pickupLocation, int capacity)
+        private Waypoint<T>[] GetRouteWithPickupLocations(Waypoint<T>[] destinations, Waypoint<T> pickupLocation, int capacity)
         {
-            List<IWaypoint<T>> route = new List<IWaypoint<T>>();
+            List<Waypoint<T>> route = new List<Waypoint<T>>();
 
             for (int i = 0; i < destinations.Length; i++)
             {
@@ -151,7 +151,7 @@ namespace ShuttleRouting
             return route.ToArray();
         }
 
-        public static double CalculateScore(IWaypoint<T>[] route)
+        public static double CalculateScore(Waypoint<T>[] route)
         {
             var score = 0d;
             for (int i = 0; i < route.Length - 1; i++)

@@ -4,14 +4,14 @@ namespace MultipleSalesman
 {
     internal class ShuttleRouterEventHandler<T> : IShuttleRouterEventHandler<T>
     {
-        private Action<IWaypoint<T>[], double, int> onImprovedRouteFoundAction;
+        private Action<Waypoint<T>[], double, int> onImprovedRouteFoundAction;
 
-        public ShuttleRouterEventHandler(Action<IWaypoint<T>[], double, int> onImprovedRouteFoundAction)
+        public ShuttleRouterEventHandler(Action<Waypoint<T>[], double, int> onImprovedRouteFoundAction)
         {
             this.onImprovedRouteFoundAction = onImprovedRouteFoundAction;
         }
 
-        public Task OnImprovedRouteFound(IWaypoint<T>[] route, double score, int iteration)
+        public Task OnImprovedRouteFound(Waypoint<T>[] route, double score, int iteration)
         {
             this.onImprovedRouteFoundAction.Invoke(route, score, iteration);
             return Task.CompletedTask;

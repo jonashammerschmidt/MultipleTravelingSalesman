@@ -2,8 +2,8 @@
 {
     public interface IShuttleRouter<T>
     {
-        Task OptimizeAsync(IWaypoint<T>[] destinations, IWaypoint<T> pickupLocation, int capacity, IShuttleRouterEventHandler<T> shuttleRouteEventHandler, CancellationToken cancellationToken);
+        Task OptimizeAsync(Waypoint<T>[] destinations, Waypoint<T> pickupLocation, int capacity, IShuttleRouterEventHandler<T> shuttleRouteEventHandler, CancellationToken cancellationToken);
         
-        Task OptimizeParallelAsync(IWaypoint<T>[] destinations, IWaypoint<T> pickupLocation, int capacity, IShuttleRouterEventHandler<T> shuttleRouterEventHandler, CancellationToken cancellationToken, int threads);
+        Task OptimizeParallelAsync(Waypoint<T>[] destinations, Waypoint<T> pickupLocation, int capacity, IShuttleRouterEventHandler<T> shuttleRouterEventHandler, CancellationToken cancellationToken, int threads);
     }
 }

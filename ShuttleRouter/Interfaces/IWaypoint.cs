@@ -1,11 +1,13 @@
 ﻿namespace ShuttleRouting
 {
-    public interface IWaypoint<T>
+    public abstract class Waypoint<T>
     {
-        public double GetCost(T waypoint);
+        public int Index { get; set; }
 
-        public bool AreEqual(T waypoint);
+        public abstract double GetCost(T waypoint);
 
-        public T GetValue();
+        public abstract bool AreEqual(T waypoint);
+
+        public abstract T GetValue();
     }
 }

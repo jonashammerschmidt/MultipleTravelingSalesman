@@ -2,6 +2,6 @@
 {
     public interface IShuttleRouterEventHandler<T>
     {
-        Task OnImprovedRouteFound(IWaypoint<T>[] route, double score, int iteration);
+        Task OnImprovedRouteFound(Waypoint<T>[] route, double score, int iteration);
     }
 }

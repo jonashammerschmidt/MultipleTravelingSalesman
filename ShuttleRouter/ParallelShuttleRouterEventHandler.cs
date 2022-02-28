@@ -11,7 +11,7 @@
             this.shuttleRouterEventHandler = shuttleRouterEventHandler;
         }
 
-        public Task OnImprovedRouteFound(IWaypoint<T>[] route, double score, int iteration)
+        public Task OnImprovedRouteFound(Waypoint<T>[] route, double score, int iteration)
         {
             if (!bestScore.HasValue || score < bestScore)
             {

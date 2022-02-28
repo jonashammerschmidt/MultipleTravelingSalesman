@@ -57,7 +57,7 @@ namespace MultipleSalesman
 
         private void StartAlgorithmus()
         {
-            IWaypoint<PointF>[] bestRoute = this.route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray();
+            Waypoint<PointF>[] bestRoute = this.route.Select(waypoint => new PointWaypoint(waypoint.X, waypoint.Y)).ToArray();
             double bestScore = 0;
             int bestIteration = 0;
             int lastIteration = 0;
@@ -65,7 +65,7 @@ namespace MultipleSalesman
             var cancellationTokenSource = new CancellationTokenSource();
             this.cancellationTokenSource = cancellationTokenSource;
             Task.Run(() => {
-                var shuttleRoute = new ShuttleRouter<PointF>();
+                var shuttleRoute = new ShuttleRouter2<PointF>();
                 ShuttleRouterEventHandler<PointF> shuttleRouteEventHandler =
                     new ShuttleRouterEventHandler<PointF>((route, score, iteration) =>
                     {
@@ -96,7 +96,7 @@ namespace MultipleSalesman
             });
         }
 
-        private void RenderRoute(IWaypoint<PointF>[] route, double score, int iteration)
+        private void RenderRoute(Waypoint<PointF>[] route, double score, int iteration)
         {
             Pen pen = new Pen(Color.Black);
             pen.Width = 3;
